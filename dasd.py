@@ -92,11 +92,20 @@ def like_pic():
     like = chrome.find_element_by_class_name('sH9wk')
     like.click()
     time.sleep(2)
-    like_a = chrome.find_element_by_class_name('Ypffh')
-    like_a.send_keys('Sir')
-    time.sleep(1.5)
-    like_a.send_keys(Keys.RETURN)
-    time.sleep(1.5)
+    # like_a = chrome.find_element_by_class_name('Ypffh')
+    # like_a.send_keys('Sir')
+    # time.sleep(1.5)
+    # like_a.send_keys(Keys.RETURN)
+    # time.sleep(1.5)
+
+
+def comment_a_pic():
+    aw = ["awesome", "yeh jabardasti commment krvaya ja rha hai"]
+    for x in range(len(aw)):
+        like_a = chrome.find_element_by_class_name('Ypffh')
+        like_a.send_keys(aw[x])
+        like_a.send_keys(Keys.RETURN)
+        time.sleep(2)
 
 
 def next_picture():
@@ -109,6 +118,8 @@ def next_picture():
 
 
 def continue_liking():
+    first_picture()
+    like_pic()
     while(True):
         next_el = next_picture()
 
@@ -121,6 +132,27 @@ def continue_liking():
 
             # like the picture
             like_pic()
+            time.sleep(2)
+        else:
+            print("not found")
+            break
+
+
+def continue_commenting():
+    first_picture()
+    comment_a_pic()
+    while(True):
+        next_el = next_picture()
+
+        # if next button is there then
+        if next_el != False:
+
+            # click the next button
+            next_el.click()
+            time.sleep(2)
+
+            # like the picture
+            comment_a_pic()
             time.sleep(2)
         else:
             print("not found")
@@ -156,12 +188,10 @@ def getUserFollowers(url):
 
 path()
 time.sleep(1)
-
 url_name(url)
-
 login(username, password)
-# send_message()
-# first_picture()
-# like_pic()
-getUserFollowers(url)
-# continue_liking()
+# send_message() # to spam someone inbox with messages
+# like_pic()  # to like a pic but use first_picture() before this
+# getUserFollowers(url) # get user followers and followings by changing page = "followers" or "following"
+# continue_liking() # like all photos
+# continue_commenting() # comment mulptiple comments on all photos
