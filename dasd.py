@@ -1,5 +1,6 @@
 from selenium import webdriver 
 from selenium.webdriver.common.keys import Keys
+import selenium.common.exceptions
 from selenium.webdriver.common.action_chains import ActionChains 
 import time 
 from selenium.webdriver import TouchActions
@@ -18,7 +19,7 @@ password = getpass.getpass()
 
 url = 'https://instagram.com/'+input('Enter username of user')
 def download_profile():
-    time.sleep(1.5)
+    time.sleep(1)
     img = chrome.find_element_by_class_name('_6q-tv')
     link = img.get_attribute('src')
     response = requests.get(link)
@@ -26,7 +27,11 @@ def download_profile():
         f.write(response.content)
 def save_image(class_name,img_name):
     time.sleep(0.5)
-    pic = chrome.find_element_by_class_name(class_name)
+    try:
+        pic = chrome.find_element_by_class_name(class_name)
+    except selenium.common.exceptions.NoSuchElementException:
+        print("Either This user has no images or you haven't followed this user")
+        return
     html = pic.get_attribute('innerHTML')
     soup = bs(html,'html.parser')
     link = soup.find('img')['src']
@@ -42,14 +47,18 @@ def download_allphotos():
     else:
         os.mkdir(user_name)
         save_image('_97aPb',user_name+'/'+'image1')
-    c = 2    
+    c = 2
     while(True):
         next_el = next_picture()
         if next_el != False:
             next_el.click()
             time.sleep(1)
-            save_image('_97aPb',user_name+'/'+'image'+str(c))
-            time.sleep(1.1)
+            try:
+                save_image('_97aPb',user_name+'/'+'image'+str(c))
+                time.sleep(1.1)
+            except NoSuchElementException:
+                print("finished")
+                return
         else:
             break
         c += 1
@@ -140,12 +149,14 @@ def like_pic():
     like_a.send_keys(Keys.RETURN)
     time.sleep(1.5)
 def next_picture(): 
-	time.sleep(2) 
+    time.sleep(2) 
 
-	# finds the button which gives the next picture 
-	nex = chrome.find_element_by_class_name("coreSpriteRightPaginationArrow") 
-	time.sleep(1) 
-	return nex 
+    try:
+        nex = chrome.find_element_by_class_name("coreSpriteRightPaginationArrow") 
+        time.sleep(1)
+        return nex
+    except selenium.common.exceptions.NoSuchElementException:
+        return 0
 def continue_liking(): 
 	while(True): 
 		next_el = next_picture() 
